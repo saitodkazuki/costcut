@@ -1,0 +1,15 @@
+%p#notice= notice
+
+%p
+  %b Amount:
+  = @expense.amount
+%p
+  %b Deleted at:
+  = @expense.deleted_at
+%p
+  %b Is credit card:
+  = @expense.is_credit_card
+
+= link_to 'Edit', edit_expense_path(@expense)
+\|
+= link_to 'Back', expenses_path
