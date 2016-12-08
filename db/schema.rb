@@ -17,6 +17,7 @@ ActiveRecord::Schema.define(version: 20161206102045) do
 
   create_table "expenses", force: :cascade do |t|
     t.integer  "amount",         null: false
+    t.string   "title",          null: false
     t.datetime "deleted_at"
     t.boolean  "is_credit_card", null: false
     t.datetime "created_at",     null: false
