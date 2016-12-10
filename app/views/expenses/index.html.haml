@@ -1,4 +1,4 @@
-%h1 List
+= render 'form'
 
 %table.table
   %thead
@@ -19,5 +19,3 @@
         %td= link_to 'Destroy', expense, :method => :delete, :data => { :confirm => 'Are you sure?' }
 
 %br
-
-= link_to 'New Expense', new_expense_path
