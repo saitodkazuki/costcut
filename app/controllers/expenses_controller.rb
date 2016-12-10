@@ -13,6 +13,11 @@ class ExpensesController < ApplicationController
   # GET /expenses/new
   def new
     @expense = Expense.new
+    t = Time.now
+    @now_year = t.strftime("%Y").to_i
+    @now_month = t.strftime("%m").to_i
+    @now_day = t.strftime("%d").to_i
+    @now_oclock = t.strftime("%H").to_i
   end
 
   # GET /expenses/1/edit
@@ -21,8 +26,20 @@ class ExpensesController < ApplicationController
 
   # POST /expenses
   def create
-    @expense = Expense.new(expense_params)
+    # merge :paid_at_year, month, day, ampm, and oclock into :paid_at
+    tmp_params = expense_params
+    if tmp_params[:paid_at_ampm] == "AM" then
+      tmp_params[:paid_at] = tmp_params[:paid_at_year] + "-" + tmp_params[:paid_at_month] + "-" + tmp_params[:paid_at_day] + " " + tmp_params[:paid_at_oclock] + ":00:00"
+    else
+      tmp_params[:paid_at] = tmp_params[:paid_at_year] + "-" + tmp_params[:paid_at_month] + "-" + tmp_params[:paid_at_day] + " " + ((tmp_params[:paid_at_oclock].to_i + 12) % 24).to_s + ":00:00"
+    end
+    tmp_params.delete(:paid_at_year)
+    tmp_params.delete(:paid_at_month)
+    tmp_params.delete(:paid_at_day)
+    tmp_params.delete(:paid_at_ampm)
+    tmp_params.delete(:paid_at_oclock)
 
+    @expense = Expense.new(tmp_params)
     if @expense.save
       redirect_to @expense, notice: 'Expense was successfully created.'
     else
@@ -53,6 +70,6 @@ class ExpensesController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def expense_params
-      params.require(:expense).permit(:amount, :title, :deleted_at, :is_credit_card)
+      params.require(:expense).permit(:paid_at_year, :paid_at_month, :paid_at_day, :paid_at_ampm, :paid_at_oclock, :amount, :tag)
     end
 end

@@ -16,12 +16,12 @@ ActiveRecord::Schema.define(version: 20161206102045) do
   enable_extension "plpgsql"
 
   create_table "expenses", force: :cascade do |t|
-    t.integer  "amount",         null: false
-    t.string   "title",          null: false
+    t.integer  "amount",     null: false
+    t.string   "tag",        null: false
+    t.datetime "paid_at",    null: false
     t.datetime "deleted_at"
-    t.boolean  "is_credit_card", null: false
-    t.datetime "created_at",     null: false
-    t.datetime "updated_at",     null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
 end

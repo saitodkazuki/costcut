@@ -6,17 +6,56 @@
         - @expense.errors.full_messages.each do |msg|
           %li= msg
 
-  .field
-    = f.label :amount
-    = f.number_field :amount
-  -# .field
-  -#   = f.label :deleted_at
-  -#   = f.datetime_select :deleted_at
-  .field
-    = f.label :title
-    = f.text_field :title
-  .field
-    = f.label :is_credit_card
-    = f.check_box :is_credit_card
+  .field.form-inline
+    .form-group
+      %select.form-control{:name => "expense[paid_at_year]"}
+        - (@now_year - 1).upto(@now_year + 1) do |i|
+          %option{:selected => i == @now_year}= i
+
+    %span /
+
+    .form-group
+      %select.form-control{:name => "expense[paid_at_month]"}
+        - month = [*1..12]
+        - (@now_month - 7).upto(@now_month + 4) do |i|
+          %option{:selected => month[i % 12] == @now_month}= month[i % 12]
+
+    %span /
+
+    .form-group
+      %select.form-control{:name => "expense[paid_at_day]"}
+        - day = [*1..31]
+        - (@now_day - 16).upto(@now_day + 14) do |i|
+          %option{:selected => day[i % 31] == @now_day}= day[i % 31]
+
+    %span @
+
+    .form-group
+      %select.form-control{:name => "expense[paid_at_ampm]"}
+        - if @now_oclock < 12 then
+          %option{:selected => true}= "AM"
+          %option= "PM"
+        - else
+          %option= "AM"
+          %option{:selected => true}= "PM"
+
+    .form-group
+      %select.form-control{:name => "expense[paid_at_oclock]"}
+        - oclock = [*0..12]
+        - (@now_oclock % 12 - 6).upto(@now_oclock % 12 + 6) do |i|
+          %option{:selected => oclock[i % 13] == @now_oclock % 12}= oclock[i % 13]
+
+  .field.input-group
+    %span.input-group-addon ￥
+    = f.number_field :amount, :class => "form-control", :placeholder => "How much?"
+
+  .field.input-group
+    %span.input-group-addon ＃
+    %select.form-control#expense_tag{:name => "expense[tag]"}
+      %option
+      %option 朝飯
+      %option 昼飯
+      %option 夕飯
+
   .actions
-    = f.submit 'Save'
+    = f.submit 'Save', :class => "btn btn-primary"

@@ -1,3 +1,5 @@
 class Expense < ApplicationRecord
-  validates :title, presence: true
+  validates :paid_at, presence: true
+  validates :amount, presence: true
+  validates :tag, presence: true
 end

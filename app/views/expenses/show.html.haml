@@ -1,14 +1,13 @@
 %p#notice= notice
-
+%p
+  %b paid_at
+  = @expense.paid_at
 %p
   %b Amount:
   = @expense.amount
 %p
-  %b Deleted at:
-  = @expense.deleted_at
-%p
-  %b Is credit card:
-  = @expense.is_credit_card
+  %b Tag:
+  = @expense.tag
 
 = link_to 'Edit', edit_expense_path(@expense)
 \|

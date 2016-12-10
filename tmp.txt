@@ -1,0 +1,20 @@
+【OR mapper を使ったDBコンソールの利用】
+$ bin/rails c
+
+1: Expense.count
+2: Expense.first
+3: e = Expense.first
+4: e
+5: e.id
+6: e.amount
+7: e.update(amount: 39)
+8: Expense.first
+9: e = Expense.first
+10: e.id
+11: Expense.where(id: 3)
+12: Expense.where(id: 1)
+13: Expense.where(id: 1, amount: 39)
+14: Expense.where("id =  1 OR amount = 39")
+15: Expense.where("id =  1 OR amount = 39").wehre(tag: "d")
+16: Expense.where("id =  1 OR amount = 39").where(tag: "d")
+17: Expense.where("id =  1 OR amount = 39").where(tag: "d").limit(10)
