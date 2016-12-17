@@ -7,50 +7,48 @@
           %li= msg
 
   .field.form-inline
-    .form-group
-      %select.form-control{:name => "expense[paid_at_year]"}
-        - (@now_year - 1).upto(@now_year + 1) do |i|
-          %option{:selected => i == @now_year}= i
-
-    %span /
-
-    .form-group
-      %select.form-control{:name => "expense[paid_at_month]"}
-        - month = [*1..12]
-        - (@now_month - 7).upto(@now_month + 4) do |i|
-          %option{:selected => month[i % 12] == @now_month}= month[i % 12]
-
-    %span /
-
-    .form-group
-      %select.form-control{:name => "expense[paid_at_day]"}
-        - day = [*1..31]
-        - (@now_day - 16).upto(@now_day + 14) do |i|
-          %option{:selected => day[i % 31] == @now_day}= day[i % 31]
-
-    %span @
-
-    .form-group
-      %select.form-control{:name => "expense[paid_at_ampm]"}
-        - if @now_oclock < 12 then
-          %option{:selected => true}= "AM"
-          %option= "PM"
-        - else
-          %option= "AM"
-          %option{:selected => true}= "PM"
-
-    .form-group
-      %select.form-control{:name => "expense[paid_at_oclock]"}
-        - oclock = [*0..12]
-        - (@now_oclock % 12 - 6).upto(@now_oclock % 12 + 6) do |i|
-          %option{:selected => oclock[i % 13] == @now_oclock % 12}= oclock[i % 13]
+    .col-my-4
+      .form-group
+        %select.form-control{:name => "expense[paid_at_year]"}
+          - (@now_year - 1).upto(@now_year + 1) do |i|
+            %option{:selected => i == @now_year}= i
+    .col-my-4
+      .form-group
+        %select.form-control{:name => "expense[paid_at_month]"}
+          - month = [*1..12]
+          - (@now_month - 7).upto(@now_month + 4) do |i|
+            %option{:selected => month[i % 12] == @now_month}= month[i % 12]
+    .col-my-4
+      .form-group
+        %select.form-control{:name => "expense[paid_at_day]"}
+          - day = [*1..31]
+          - (@now_day - 16).upto(@now_day + 14) do |i|
+            %option{:selected => day[i % 31] == @now_day}= day[i % 31]
+    .col-my-6
+      .form-group
+        %select.form-control{:name => "expense[paid_at_ampm]"}
+          - if @now_oclock < 12 then
+            %option{:selected => true}= "AM"
+            %option= "PM"
+          - else
+            %option= "AM"
+            %option{:selected => true}= "PM"
+    .col-my-6
+      .form-group
+        %select.form-control{:name => "expense[paid_at_oclock]"}
+          - oclock = [*1..12]
+          - (@now_oclock % 12 - 7).upto(@now_oclock % 12 + 4) do |i|
+            - if @now_oclock == 0 || @now_oclock == 12 then
+              %option{:selected => oclock[i % 12] == 12}= oclock[i % 12]
+            - else
+              %option{:selected => oclock[i % 12] == @now_oclock % 12}= oclock[i % 12]
 
   .field.input-group
-    %span.input-group-addon ￥
+    %span.input-group-addon.gray-bg ￥
     = f.number_field :amount, :class => "form-control", :placeholder => "How much?"
 
-  .field.input-group
-    %span.input-group-addon ＃
+  .field.input-group.m-b
+    %span.input-group-addon.gray-bg ＃
     %select.form-control#expense_tag{:name => "expense[tag]"}
       %option
       %option 朝飯
@@ -58,4 +56,4 @@
       %option 夕飯
 
   .actions
-    = f.submit 'Save', :class => "btn btn-primary"
+    = f.submit 'Save', :class => "btn btn-primary btn-block"

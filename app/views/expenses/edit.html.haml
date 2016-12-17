@@ -1,7 +1,13 @@
-%h1 Edit
+.row
+  .middle-box.text-center.loginscreen.animated.fadeInDown
+    .ibox.float-e-margins
+      .ibox-title
+        %h5 Edit Event
+      .ibox-content
+        = render 'form'
 
-= render 'form'
+        = link_to 'Cancel', expenses_path, :class => "btn btn-white btn-block"
 
-= link_to 'Show', @expense
-\|
-= link_to 'Back', expenses_path
+        = link_to 'Delete', @expense, :method => :delete, :data => { :confirm => 'Are you sure?' }, :class => "btn btn-danger btn-block"
+
+        .clear-float

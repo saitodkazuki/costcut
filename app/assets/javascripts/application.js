@@ -15,3 +15,8 @@
 //= require turbolinks
 //= require smart_admin
 //= require_tree .
+
+//= require flot/jquery.flot
+//= require flot/jquery.flot.resize
+//= require flot/jquery.flot.pie
+//= require flot/jquery.flot.time

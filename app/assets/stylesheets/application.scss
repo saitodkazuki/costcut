@@ -1,3 +1,72 @@
 /*
  *= require smart_admin
 */
+
+/* navigation bar */
+.navbar {
+  margin-bottom: 0px;
+}
+.top-navigation .navbar-brand {
+  padding: 15px 25px 15px 35px;
+}
+.other-page {
+  padding: 10px 25px 10px 25px;
+  font-size: 30px;
+  color: #1ab394;
+}
+.top-navigation .navbar-header {
+  display: inline-block;
+  float: left;
+}
+.top-navigation .navbar-menu {
+  display: inline-block;
+  float: right;
+}
+.open-small-chat {
+  height: 76px;
+  width: 76px;
+  font-size: 40px;
+  line-height: 40px;
+  padding: 18px;
+  border-radius: 3px;
+}
+
+/* input form */
+.middle-box {
+  padding-top: 0px;
+}
+.form-inline .form-group {
+  width: 100%;
+}
+.form-inline .form-control {
+  width: 100%;
+}
+.col-my-4 {
+  width: 33.33333333%;
+  float: left;
+}
+.col-my-6 {
+  width: 50%;
+  float: left;
+}
+.ibox-content {
+  padding-bottom: 10px;
+}
+.clear-float {
+  clear: both;
+}
+
+/* list area */
+.graphColumns {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 25px 20px 0px 20px;
+}
+.listColumns {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0px 20px 20px 20px;
+}
+.table {
+  margin-bottom: 0px;
+}
