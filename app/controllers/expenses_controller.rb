@@ -1,5 +1,3 @@
-require "time"
-
 class ExpensesController < ApplicationController
   before_action :set_expense, only: [:show, :edit, :update, :destroy]
 
@@ -52,6 +50,7 @@ class ExpensesController < ApplicationController
   def index
     @expenses = Expense.all.order('paid_at DESC')
     @expense = Expense.new
+    @tags = Tag.all
 
     # for input form
     t = Time.now
@@ -61,7 +60,8 @@ class ExpensesController < ApplicationController
     @now_oclock = t.strftime("%H").to_i
 
     # for graph
-    @graph = Array.new
+    @graph_xaxis = Array.new
+    @graph_yaxis = Array.new
     graph_year = @now_year # 初期化（グラフ対象日）
     graph_month = @now_month # 初期化（グラフ対象日）
     graph_day = @now_day # 初期化（グラフ対象日）
@@ -74,8 +74,8 @@ class ExpensesController < ApplicationController
         graph_amount += expense.amount
       else
         # グラフ対象日のデータを登録（これまで加算されてきたもの、もしくは0）
-        graph_datetime = graph_year.to_s + "-" + graph_month.to_s + "-" + graph_day.to_s + " 00:00:00"
-        @graph << [Time.parse(graph_datetime).to_i * 1000, graph_amount]
+        @graph_xaxis << graph_month.to_s + "/" + graph_day.to_s
+        @graph_yaxis << graph_amount
         # グラフに表示する日数分のデータを登録していたら終了
         if (day_count -= 1) == 0 then
           return
@@ -89,8 +89,8 @@ class ExpensesController < ApplicationController
         end
         # 今回取得したexpenseデータの日付になるまで全て0で登録
         while (graph_day) != expense.paid_at.strftime("%d").to_i do
-          graph_datetime = graph_year.to_s + "-" + graph_month.to_s + "-" + graph_day.to_s + " 00:00:00"
-          @graph << [Time.parse(graph_datetime).to_i * 1000, 0]
+          @graph_xaxis << graph_month.to_s + "/" + graph_day.to_s
+          @graph_yaxis << graph_amount
           # グラフに表示する日数分のデータを登録していたら終了
           if (day_count -= 1) == 0 then
             return
@@ -109,14 +109,17 @@ class ExpensesController < ApplicationController
       # 今回のデータが、最後のデータであるならば終了
       if (size -= 1) == 0 then
         # 今回のデータがグラフ対象日もしくはその前日のデータであれば登録して終了
-        graph_datetime = graph_year.to_s + "-" + graph_month.to_s + "-" + graph_day.to_s + " 00:00:00"
-        @graph << [Time.parse(graph_datetime).to_i * 1000, graph_amount]
+        @graph_xaxis << graph_month.to_s + "/" + graph_day.to_s
+        @graph_yaxis << graph_amount
       end
     end
+    @graph_xaxis.reverse!
+    @graph_yaxis.reverse!
   end
 
   # GET /expenses/1/edit
   def edit
+    @tags = Tag.all
     t = @expense.paid_at
     @now_year = t.strftime("%Y").to_i
     @now_month = t.strftime("%m").to_i
@@ -141,9 +144,6 @@ class ExpensesController < ApplicationController
     else
       render :edit
     end
-  end
-
-  def new
   end
 
   # DELETE /expenses/1

@@ -1,21 +1,23 @@
-%h1 Listing tags
+.middle-box.text-center.loginscreen.animated.fadeInDown.p-t
+  .ibox-title
+    %h5 New Tag
+  .ibox.float-e-margins
+    .ibox-content
+      = render 'form'
 
-%table
-  %thead
-    %tr
-      %th Name
-      %th
-      %th
-      %th
+.middle-box.loginscreen.animated.fadeInDown
+  .ibox-title
+    %h5 Your Tags
+  .ibox.float-e-margins
+    .ibox-content
+      %table.table.table-striped
+        %tbody
+          - @tags.each do |tag|
+            %tr
+              %td= tag.name
+              %td
+                %i= link_to '', edit_tag_path(tag), :class => "fa fa-pencil"
 
-  %tbody
-    - @tags.each do |tag|
-      %tr
-        %td= tag.name
-        %td= link_to 'Show', tag
-        %td= link_to 'Edit', edit_tag_path(tag)
-        %td= link_to 'Destroy', tag, :method => :delete, :data => { :confirm => 'Are you sure?' }
-
-%br
-
-= link_to 'New Tag', new_tag_path
+#small-chat
+  %a.open-small-chat
+    %i.fa.fa-line-chart

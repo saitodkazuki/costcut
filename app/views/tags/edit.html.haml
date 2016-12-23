@@ -1,7 +1,13 @@
-%h1 Editing tag
+.row
+  .middle-box.text-center.loginscreen.animated.fadeInDown.p-t
+    .ibox.float-e-margins
+      .ibox-title
+        %h5 Edit Tag
+      .ibox-content
+        = render 'form'
 
-= render 'form'
+        = link_to 'Cancel', tags_path, :class => "btn btn-white btn-block"
 
-= link_to 'Show', @tag
-\|
-= link_to 'Back', tags_path
+        = link_to 'Delete', @tag, :method => :delete, :data => { :confirm => 'Are you sure?' }, :class => "btn btn-danger btn-block"
+
+        .clear-float

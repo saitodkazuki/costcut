@@ -6,8 +6,10 @@
         - @tag.errors.full_messages.each do |msg|
           %li= msg
 
-  .field
-    = f.label :name
-    = f.text_field :name
+  .field.form-inline.m-b
+    .field.input-group.w-f
+      %span.input-group-addon.gray-bg ＃
+      = f.text_field :name, :class => "form-control", :placeholder => ""
+
   .actions
-    = f.submit 'Save'
+    = f.submit 'Save', :class => "btn btn-primary btn-block"

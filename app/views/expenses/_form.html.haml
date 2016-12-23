@@ -51,9 +51,13 @@
     %span.input-group-addon.gray-bg ＃
     %select.form-control#expense_tag{:name => "expense[tag]"}
       %option
-      %option 朝飯
-      %option 昼飯
-      %option 夕飯
+      - @tags.each do |tag|
+        - if !@expense.tag.nil? && @expense.tag == tag.name
+          %option{:selected => "selected"}
+            = tag.name
+        - else
+          %option
+            = tag.name
 
   .actions
     = f.submit 'Save', :class => "btn btn-primary btn-block"

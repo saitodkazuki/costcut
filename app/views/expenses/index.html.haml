@@ -1,17 +1,21 @@
+.middle-box.text-center.loginscreen.animated.fadeInDown.p-t
+  .ibox.float-e-margins
+    .ibox-title
+      %h5 New Expense
+    .ibox-content
+      = render 'form'
+
 .graphColumns.animated.fadeInDown
   .ibox.float-e-margins
+    .ibox-title
+      %h5 Summary
     .ibox-content
-      .flot-chart
-        .flot-chart-content#flot-bar-chart{:style => "padding: 0px; position: relative;"}
-
-
-.middle-box.text-center.loginscreen.animated.fadeInDown
-  .ibox.float-e-margins
-    .ibox-content.black-bd
-      = render 'form'
+      %canvas#lineChart{:height => "140"}
 
 .listColumns.animated.fadeInDown
   .ibox.float-e-margins
+    .ibox-title
+      %h5 Recent Expenses
     .ibox-content
       %table.table.table-striped
         %tbody
@@ -28,42 +32,30 @@
     %i.fa.fa-line-chart
 
 :javascript
-  $(function() {
-    var barOptions = {
-      series: {
-        bars: {
-          show: true,
-          barWidth: 0.6,
-          align: "center"
-        }
-      },
-      xaxis: {
-        show: true,
-        position: "bottom",
-        mode: "time",
-        tickSize: [1, "day"],
-        timezone: "browser",
-        timeformat: "%m/%d"
-      },
-      colors: ["#1ab394"],
-      grid: {
-        color: "#999999",
-        hoverable: true,
-        clickable: true,
-        tickColor: "#D4D4D4",
-        borderWidth:0
-      },
+  $(function () {
+    var lineData = {
+      labels: #{@graph_xaxis},
+      datasets: [{
+        backgroundColor: 'rgba(26,179,148,0.5)',
+        borderColor: "rgba(26,179,148,0.7)",
+        pointBackgroundColor: "rgba(26,179,148,1)",
+        pointBorderColor: "#fff",
+        data: #{@graph_yaxis}
+      }]
+    };
+    var lineOptions = {
+      responsive: true,
       legend: {
-        show: false
+        display: false
       },
-      tooltip: true,
-      tooltipOpts: {
-        content: "x: %x, y: %y"
+      scales: {
+        yAxes: [{
+          ticks: {
+            beginAtZero: true
+          }
+        }]
       }
     };
-    var barData = {
-      label: "bar",
-      data: #{@graph}
-    };
-    $.plot($("#flot-bar-chart"), [barData], barOptions);
+    var ctx = document.getElementById("lineChart").getContext("2d");
+    new Chart(ctx, {type: 'bar', data: lineData, options: lineOptions});
   });
