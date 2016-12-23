@@ -66,7 +66,7 @@ class ExpensesController < ApplicationController
     graph_month = @now_month # 初期化（グラフ対象日）
     graph_day = @now_day # 初期化（グラフ対象日）
     graph_amount = 0 # 初期化（グラフ対象日の出費合計）
-    day_count = 7 # グラフに表示する日数
+    day_count = 10 # グラフに表示する日数
     size = @expenses.size
     @expenses.each do |expense|
       if expense.paid_at.strftime("%d").to_i == graph_day then
@@ -74,7 +74,8 @@ class ExpensesController < ApplicationController
         graph_amount += expense.amount
       else
         # グラフ対象日のデータを登録（これまで加算されてきたもの、もしくは0）
-        @graph << [graph_day, graph_amount]
+        graph_datetime = graph_year.to_s + "-" + graph_month.to_s + "-" + graph_day.to_s + " 00:00:00"
+        @graph << [Time.parse(graph_datetime).to_i * 1000, graph_amount]
         # グラフに表示する日数分のデータを登録していたら終了
         if (day_count -= 1) == 0 then
           return
@@ -88,7 +89,8 @@ class ExpensesController < ApplicationController
         end
         # 今回取得したexpenseデータの日付になるまで全て0で登録
         while (graph_day) != expense.paid_at.strftime("%d").to_i do
-          @graph << [graph_day, 0]
+          graph_datetime = graph_year.to_s + "-" + graph_month.to_s + "-" + graph_day.to_s + " 00:00:00"
+          @graph << [Time.parse(graph_datetime).to_i * 1000, 0]
           # グラフに表示する日数分のデータを登録していたら終了
           if (day_count -= 1) == 0 then
             return
@@ -107,7 +109,8 @@ class ExpensesController < ApplicationController
       # 今回のデータが、最後のデータであるならば終了
       if (size -= 1) == 0 then
         # 今回のデータがグラフ対象日もしくはその前日のデータであれば登録して終了
-        @graph << [graph_day, graph_amount]
+        graph_datetime = graph_year.to_s + "-" + graph_month.to_s + "-" + graph_day.to_s + " 00:00:00"
+        @graph << [Time.parse(graph_datetime).to_i * 1000, graph_amount]
       end
     end
   end

@@ -7,7 +7,7 @@
 
 .middle-box.text-center.loginscreen.animated.fadeInDown
   .ibox.float-e-margins
-    .ibox-content
+    .ibox-content.black-bd
       = render 'form'
 
 .listColumns.animated.fadeInDown
@@ -34,18 +34,16 @@
         bars: {
           show: true,
           barWidth: 0.6,
-          fill: true,
-          fillColor: {
-            colors: [{
-              opacity: 0.8
-            }, {
-              opacity: 0.8
-            }]
-          }
+          align: "center"
         }
       },
       xaxis: {
-
+        show: true,
+        position: "bottom",
+        mode: "time",
+        tickSize: [1, "day"],
+        timezone: "browser",
+        timeformat: "%m/%d"
       },
       colors: ["#1ab394"],
       grid: {
