@@ -1,9 +1,8 @@
 class ExpensesController < ApplicationController
   before_action :set_expense, only: [:show, :edit, :update, :destroy]
 
-  # My Method
   def merge_params(tmp_params)
-    # merge all into paid_at
+    # Merging all params into paid_at
     if tmp_params[:paid_at_ampm] == "AM" then
       if tmp_params[:paid_at_oclock] == "12" then
         tmp_params[:paid_at] = tmp_params[:paid_at_year] + "-" + tmp_params[:paid_at_month] + "-" + tmp_params[:paid_at_day] + " 00:00:00"
@@ -17,7 +16,7 @@ class ExpensesController < ApplicationController
         tmp_params[:paid_at] = tmp_params[:paid_at_year] + "-" + tmp_params[:paid_at_month] + "-" + tmp_params[:paid_at_day] + " " + ((tmp_params[:paid_at_oclock].to_i + 12) % 24).to_s + ":00:00"
       end
     end
-    # restructuring
+    # Restructuring
     tmp_params.delete(:paid_at_year)
     tmp_params.delete(:paid_at_month)
     tmp_params.delete(:paid_at_day)
@@ -26,22 +25,23 @@ class ExpensesController < ApplicationController
     return tmp_params
   end
 
-  # My Method yesterday(year, month) returns [year, month, day]
-  def yesterday(year, month)
-    if (month -= 1) == 0 then
-      month = 12
-      year -= 1
-    end
-    if [1, 3, 5, 7, 8, 10, 12].include?(month) then
-      day = 31
-    elsif month == 2 then
-      if year % 4 == 0 then
-        day = 29
-      else
-        day = 28
+  def yesterday(year, month, day)
+    if (day -= 1) == 0 then
+      if (month -= 1) == 0 then
+        month = 12
+        year -= 1
       end
-    else
-      day = 30
+      if [1, 3, 5, 7, 8, 10, 12].include?(month) then
+        day = 31
+      elsif month == 2 then
+        if year % 4 == 0 then
+          day = 29
+        else
+          day = 28
+        end
+      else
+        day = 30
+      end
     end
     return [year, month, day]
   end
@@ -51,70 +51,59 @@ class ExpensesController < ApplicationController
     @expenses = Expense.all.order('paid_at DESC')
     @expense = Expense.new
     @tags = Tag.all
-
-    # for input form
+    # For input form
     t = Time.now
     @now_year = t.strftime("%Y").to_i
     @now_month = t.strftime("%m").to_i
     @now_day = t.strftime("%d").to_i
     @now_oclock = t.strftime("%H").to_i
-
-    # for graph
+    # For graph
     @graph_xaxis = Array.new
     @graph_yaxis = Array.new
-    graph_year = @now_year # 初期化（グラフ対象日）
-    graph_month = @now_month # 初期化（グラフ対象日）
-    graph_day = @now_day # 初期化（グラフ対象日）
-    graph_amount = 0 # 初期化（グラフ対象日の出費合計）
-    day_count = 10 # グラフに表示する日数
-    size = @expenses.size
+    graph_year = @now_year
+    graph_month = @now_month
+    graph_day = @now_day
+    graph_amount = 0
+    day_count = 7 # Size of xaxis
+    data_size = @expenses.size
     @expenses.each do |expense|
-      if expense.paid_at.strftime("%d").to_i == graph_day then
-        # 今回取得したexpenseデータが、グラフ対象日の新規データであれば、加算して保留
+      if expense.paid_at.strftime("%Y%m%d") == (graph_year.to_s + format("%02d", graph_month) + format("%02d", graph_day)) then
         graph_amount += expense.amount
       else
-        # グラフ対象日のデータを登録（これまで加算されてきたもの、もしくは0）
         @graph_xaxis << graph_month.to_s + "/" + graph_day.to_s
         @graph_yaxis << graph_amount
-        # グラフに表示する日数分のデータを登録していたら終了
         if (day_count -= 1) == 0 then
+          @graph_xaxis.reverse!
+          @graph_yaxis.reverse!
           return
         end
-        # 1日前の日付を計算
-        graph_day -= 1
-        if graph_day == 0 then
-          graph_year = yesterday(graph_year, graph_month)[0]
-          graph_month = yesterday(graph_year, graph_month)[1]
-          graph_day = yesterday(graph_year, graph_month)[2]
-        end
-        # 今回取得したexpenseデータの日付になるまで全て0で登録
-        while (graph_day) != expense.paid_at.strftime("%d").to_i do
+        yesterday = yesterday(graph_year, graph_month, graph_day)
+        graph_year = yesterday[0]
+        graph_month = yesterday[1]
+        graph_day = yesterday[2]
+        while expense.paid_at.strftime("%Y%m%d") != (graph_year.to_s + format("%02d", graph_month) + format("%02d", graph_day)) do
           @graph_xaxis << graph_month.to_s + "/" + graph_day.to_s
-          @graph_yaxis << graph_amount
-          # グラフに表示する日数分のデータを登録していたら終了
+          @graph_yaxis << 0
           if (day_count -= 1) == 0 then
+            @graph_xaxis.reverse!
+            @graph_yaxis.reverse!
             return
           end
-          # 1日前の日付を計算
-          graph_day -= 1
-          if graph_day == 0 then
-            graph_year = yesterday(graph_year, graph_month)[0]
-            graph_month = yesterday(graph_year, graph_month)[1]
-            graph_day = yesterday(graph_year, graph_month)[2]
-          end
+          yesterday = yesterday(graph_year, graph_month, graph_day)
+          graph_year = yesterday[0]
+          graph_month = yesterday[1]
+          graph_day = yesterday[2]
         end
-        # 今回取得したexpenseデータの日付の分のデータを代入
         graph_amount = expense.amount
       end
-      # 今回のデータが、最後のデータであるならば終了
-      if (size -= 1) == 0 then
-        # 今回のデータがグラフ対象日もしくはその前日のデータであれば登録して終了
+      if (data_size -= 1) == 0 then
         @graph_xaxis << graph_month.to_s + "/" + graph_day.to_s
         @graph_yaxis << graph_amount
+        @graph_xaxis.reverse!
+        @graph_yaxis.reverse!
+        return
       end
     end
-    @graph_xaxis.reverse!
-    @graph_yaxis.reverse!
   end
 
   # GET /expenses/1/edit

@@ -1,35 +1,38 @@
-.middle-box.text-center.loginscreen.animated.fadeInDown.p-t
-  .ibox.float-e-margins
-    .ibox-title
-      %h5 New Expense
-    .ibox-content
-      = render 'form'
-
-.graphColumns.animated.fadeInDown
-  .ibox.float-e-margins
-    .ibox-title
-      %h5 Summary
-    .ibox-content
-      %canvas#lineChart{:height => "140"}
-
-.listColumns.animated.fadeInDown
-  .ibox.float-e-margins
-    .ibox-title
-      %h5 Recent Expenses
-    .ibox-content
-      %table.table.table-striped
-        %tbody
-          - @expenses.each do |expense|
-            %tr
-              %td= expense.paid_at.strftime("%m/%d %p %I")
-              %td= "#" + expense.tag
-              %td= "¥" + expense.amount.to_s
-              %td
-                %i= link_to '', edit_expense_path(expense), :class => "fa fa-pencil"
-
 #small-chat
   %a.open-small-chat
     %i.fa.fa-line-chart
+
+.dashboard.animated.fadeInDown
+  .row
+    .col-lg-5
+      .ibox.float-e-margins
+        .ibox-title
+          %h5 New Expense
+        .ibox-content
+          = render 'form'
+    .col-lg-7
+      .ibox.float-e-margins
+        .ibox-title
+          %h5 Summary
+        .ibox-content
+          %canvas#lineChart
+
+    .col-lg-12
+      .ibox.float-e-margins
+        .ibox-title
+          %h5 Recent Expenses
+        .ibox-content
+          %table.table.table-striped
+            %tbody
+              - @expenses.each do |expense|
+                %tr
+                  %td= expense.paid_at.strftime("%m/%d %p %I")
+                  %td= "#" + expense.tag
+                  %td= "¥" + expense.amount.to_s
+                  %td
+                    %i= link_to '', edit_expense_path(expense), :class => "fa fa-pencil"
+
+
 
 :javascript
   $(function () {
