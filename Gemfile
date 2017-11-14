@@ -26,3 +26,5 @@ end
 gem 'smart_admin', git: "https://a8f8a5987aa4d6c20e8c9903967204794f75fc08:x-oauth-basic@github.com/AI-saac/smart_admin.git"
 gem 'bootstrap-sass'
 gem 'font-awesome-rails'
+
+gem 'devise'
